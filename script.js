@@ -67,6 +67,60 @@ const getPossibleMoves = (x, y) => {
   return possibleMoves;
 };
 
+const dijkstra = (start) => {
+  const [startX, startY] = start;
+  const adjList = buildAdjList(); // edjes for each node
+  // Initialize arrays for keeping track of traversal
+  const distances = new Array(8); // distances from start to each node
+  const visitedNodes = new Array(8); // keep track of unvisited nodes
+  const previousNodes = new Array(8); // keep track of the node before to get shortest path
+  for (let i = 0; i < distances.length; i++) {
+    distances[i] = new Array(8).fill(Infinity); // all are inifinitely far
+    visitedNodes[i] = new Array(8).fill(false); // all are unvisited
+    previousNodes[i] = new Array(8).fill(null); // all are empty first
+  }
+  distances[startX][startY] = 0; // start at first node, so distance is 0
+  const queue = [start]; // for keeping track of where we are
+  while (queue.length > 0) {
+    const [currentNodeX, currentNodeY] = queue.shift(); // remove from front
+    // if visited already, skip
+    if (visitedNodes[currentNodeX][currentNodeY]) continue;
+    // mark as visited
+    visitedNodes[currentNodeX][currentNodeY] = true;
+    // check neighbors
+    adjList[currentNodeX][currentNodeY].forEach((neighbor) => {
+      // get tentative distance to neighbor through currnet node (every edge is weight 1)
+      const tentative_distance = distances[currentNodeX][currentNodeY] + 1; 
+      if (
+        !visitedNodes[neighbor[0]][neighbor[1]] && // if neighbor hasn't been visited
+        tentative_distance < distances[neighbor[0]][neighbor[1]] // and the tentative distance is smaller than what we already have
+      ) {
+        // if tentative distance is smaller, update it
+        distances[neighbor[0]][neighbor[1]] = tentative_distance;
+        // enqueue neighbor for potential visitation in the future
+        queue.unshift(neighbor);
+        // add previous node to neighbor's previous node array
+        previousNodes[neighbor[0]][neighbor[1]] = [currentNodeX, currentNodeY];
+      }
+    });
+  }
+  return { distances, previousNodes };
+};
+
+const runner = (start, end) => {
+  const { distances, previousNodes } = dijkstra(start);
+  const [ endX, endY ] = end;
+  const route = [];
+  let node = previousNodes[endX][endY];
+  route.unshift(end);
+  console.log(`Going to [${route}]`);
+  while (node) {
+    route.unshift(node);
+    node = previousNodes[node[0]][node[1]];
+  }
+  console.log(route);
+};
+
 /**
  * Get all paths from one location to another.
  * currentLocation = [x, y] starting location.
@@ -114,13 +168,13 @@ const getPathsRec = (curr, dest) => {
   });
 };
 
-const containsDuplicates = array => {
+const containsDuplicates = (array) => {
   const seen = {};
-  return array.some(elem => {
+  return array.some((elem) => {
     if (seen.hasOwnProperty(elem)) return true;
-    seen[elem] = false
+    seen[elem] = false;
   });
-}
+};
 
 const containsTarget = (array, target) => {
   for (let i = 0; i < array.length; i++) {
@@ -131,13 +185,13 @@ const containsTarget = (array, target) => {
     }
   }
   return false;
-}
+};
 
 // todo for next:
 // for each vertex in the list of the current vertex's adjacency list,
 // before making the recursive call to the iterator's vertex, make a
 // new path, containing everything up to that point, and after the recursive
-// call, if that path ends in the destination, add that path to the list of 
+// call, if that path ends in the destination, add that path to the list of
 // paths, so that we make get as many paths as possible
 
 const getPathRec = (list, path, vertex, destination) => {
@@ -148,7 +202,8 @@ const getPathRec = (list, path, vertex, destination) => {
   let duplicate = containsDuplicates(path);
   console.log("contains duplicate entries? ", duplicate);
   if (duplicate) return null;
-  if (containsTarget(path, vertex) || containsTarget(path, destination)) return null;
+  if (containsTarget(path, vertex) || containsTarget(path, destination))
+    return null;
   path.push(vertex);
   console.log(list[vertex[0]][vertex[1]]);
   for (let i = 0; i < list[vertex[0]][vertex[1]].length; i++) {
@@ -184,5 +239,11 @@ const test = () => {
   // })
 };
 
-getPathsRec([0, 0], [1, 2]);
+// getPathsRec([0, 0], [1, 2]);
 // test();
+//
+// console.log(dijkstra([0, 0], [1, 2]));
+
+runner([0, 0], [1, 2]);
+runner([0, 0], [3, 3]);
+runner([0, 0], [7, 7]);
