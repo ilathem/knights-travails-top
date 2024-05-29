@@ -4,7 +4,7 @@
 
 ## What does this do?
 
-This uses dijkstra's algorithm on a the knight piece of a chess board to find the 
+This uses dijkstra's algorithm on the knight piece of a chess board to find the 
 shortest path from a starting square to an ending square, and prints out that 
 distance. Uses a priority queue to keep track of which nodes to visit next, and 
 an adjacency matrix to know which square can be moved to. Each edge is given a 
