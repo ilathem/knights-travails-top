@@ -19,6 +19,10 @@
 		<p class="text">Select starting square!</p>
 	</div>
 <script>
+	let selecting = true;
+	let starting = true;
+	let startingSquare, endingSquare;
+
 	function loadTable() {
 		let table = document.createElement('table');
 		let grid = new Array(9);
@@ -30,8 +34,10 @@
 				grid[i][j] = cell;
 				row.appendChild(cell);
 				cell.addEventListener('click', (e) => {
-					console.log(`clicked [${j - 1}, ${7 - i}]`);
-					selectSquare(i, j, grid);
+					// console.log(`clicked [${j - 1}, ${7 - i}]`);
+					if (selecting)
+						selectSquare(i, j, grid);
+					else clearSquares(grid);
 				});
 				if (i === 8 && j !== 0) {
 					cell.innerText = j - 1;
@@ -57,10 +63,32 @@
 	}
 
 	function selectSquare(iVal, jVal, grid) {
-		console.log('running');
+		grid[iVal][jVal].innerText = starting ?
+			'O' : 'X';
+		grid[iVal][jVal].style.padding = 0;
+		grid[iVal][jVal].style.textAlign = 'center';
+		if (starting) startingSquare = [jVal - 1, 7 - iVal];
+		else {
+			endingSquare = [jVal - 1, 7 - iVal];
+			selecting = !selecting;
+			printPath(grid);
+		}
+		starting = !starting;
+		document.querySelector('.text').innerText = `Select ${starting ? 'starting' : 'ending'} square`
+		// console.log(startingSquare, endingSquare);
+	}
+
+	function printPath(grid) {
+		const path = getPath(startingSquare, endingSquare);
+		console.log(path);
+		// Todo: visualize path in UI (colored squares with step number
+		// on each square)
+	}
+
+	function clearSquares(grid) {
 		for (let i = 0; i < 9; i++) {
 			for (let j = 0; j < 9; j++) {
-				cell = grid[i][j];
+				let cell = grid[i][j]
 				if (i === 8 && j !== 0) {
 					cell.innerText = j - 1;
 					cell.style.border = 'none';
@@ -79,16 +107,13 @@
 					cell.style.textAlign = 'center';
 				}
 				else {
-					if (i === iVal && j === jVal) {
-						cell.innerText = 'X';
-						cell.style.padding = '0';
-						cell.style.textAlign = 'center';
-					} else {
-						cell.innerText = '';
-					}
+					cell.innerText = '';
 				}
 			}
 		}
+		startingSquare = [];
+		endingSquare = [];
+		selecting = true;
 	}
 	loadTable();
 </script>
