@@ -82,14 +82,29 @@ const dijkstra = (start) => {
   distances[startX][startY] = 0; // start at first node, so distance is 0
   const queue = [start]; // for keeping track of where we are
   while (queue.length > 0) {
-    const [currentNodeX, currentNodeY] = queue.shift(); // remove from front
+    // let [currentNodeX, currentNodeY] = queue.shift(); // remove from front
+    
+    let [currentNodeX, currentNodeY] = queue[0];
+    let closestDistance = Infinity;
+    let indexToRemove = -1;
+    queue.forEach((node, index) => {
+      if (distances[node[0]][node[1]] < closestDistance) {
+        closestDistance = distances[node[0]][node[1]];
+        [currentNodeX, currentNodeY] = node;
+        indexToRemove = index;
+      }
+    });
+    queue.splice(indexToRemove, 1);
+    // console.log(`Visiting [${currentNodeX}, ${currentNodeY}]`);
+    // console.log(queue);
+
     // if visited already, skip
     if (visitedNodes[currentNodeX][currentNodeY]) continue;
     // mark as visited
     visitedNodes[currentNodeX][currentNodeY] = true;
     // check neighbors
     adjList[currentNodeX][currentNodeY].forEach((neighbor) => {
-      // get tentative distance to neighbor through currnet node (every edge is weight 1)
+      // get tentative distance to neighbor through current node (every edge is weight 1)
       const tentative_distance = distances[currentNodeX][currentNodeY] + 1; 
       if (
         !visitedNodes[neighbor[0]][neighbor[1]] && // if neighbor hasn't been visited
@@ -99,7 +114,7 @@ const dijkstra = (start) => {
         distances[neighbor[0]][neighbor[1]] = tentative_distance;
         // enqueue neighbor for potential visitation in the future
         queue.unshift(neighbor);
-        // add previous node to neighbor's previous node array
+        // add current node to neighbor's previous node array
         previousNodes[neighbor[0]][neighbor[1]] = [currentNodeX, currentNodeY];
       }
     });
@@ -118,12 +133,12 @@ const runner = (start, end) => {
     node = previousNodes[node[0]][node[1]];
   }
   console.log(`Moving from [${start}] to [${end}]`);
-  console.log(`You made it in ${route.length} moves!, here's your path:`);
+  console.log(`You made it in ${route.length - 1} moves!, here's your path:`);
   route.forEach(node => console.log(node));
-  console.log(distances[endX][endY])
+  // console.log(distances[endX][endY])
 };
 
-// runner([0, 0], [1, 2]);
-// runner([0, 0], [3, 3]);
-// runner([0, 0], [7, 7]);
+runner([0, 0], [1, 2]);
+runner([0, 0], [3, 3]);
+runner([0, 0], [7, 7]);
 runner([3, 3], [4, 3]);
