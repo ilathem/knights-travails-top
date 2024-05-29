@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Knight's Travails</title>
+	<script src="script.js"></script>
+</head>
+<style>
+	* {
+		user-select: none;
+	}
+	td {
+		padding: 1em;
+		border: 2px solid black;
+	}
+</style>
+<body>
+	<div class="center">
+		<p class="text">Select starting square!</p>
+	</div>
+<script>
+	function loadTable() {
+		let table = document.createElement('table');
+		let grid = new Array(9);
+		for ( let i = 0; i < 9; i++ ) {
+			let row = document.createElement('tr');
+			grid[i] = new Array(9);
+			for (let j = 0; j < 9; j++ ) {
+				let cell = document.createElement('td');
+				grid[i][j] = cell;
+				row.appendChild(cell);
+				cell.addEventListener('click', (e) => {
+					console.log(`clicked [${j - 1}, ${7 - i}]`);
+					selectSquare(i, j, grid);
+				});
+				if (i === 8 && j !== 0) {
+					cell.innerText = j - 1;
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+					cell.style.textAlign = 'center';
+				}
+				if (i === 8 && j === 0) {
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+				}
+				if (j === 0 && i !== 8) {
+					cell.innerText = 7 - i;
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+					cell.style.width = '28px';
+					cell.style.textAlign = 'center';
+				}
+			}
+			table.appendChild(row);
+		}
+		document.querySelector('.center').appendChild(table);
+	}
+
+	function selectSquare(iVal, jVal, grid) {
+		console.log('running');
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
+				cell = grid[i][j];
+				if (i === 8 && j !== 0) {
+					cell.innerText = j - 1;
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+					cell.style.textAlign = 'center';
+				}
+				else if (i === 8 && j === 0) {
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+				}
+				else if (j === 0 && i !== 8) {
+					cell.innerText = 7 - i;
+					cell.style.border = 'none';
+					cell.style.padding = '0';
+					cell.style.width = '28px';
+					cell.style.textAlign = 'center';
+				}
+				else {
+					if (i === iVal && j === jVal) {
+						cell.innerText = 'X';
+						cell.style.padding = '0';
+						cell.style.textAlign = 'center';
+					} else {
+						cell.innerText = '';
+					}
+				}
+			}
+		}
+	}
+	loadTable();
+</script>
+</body>
+</html>

@@ -138,7 +138,20 @@ const runner = (start, end) => {
   // console.log(distances[endX][endY])
 };
 
-runner([0, 0], [1, 2]);
-runner([0, 0], [3, 3]);
-runner([0, 0], [7, 7]);
-runner([3, 3], [4, 3]);
+const getPath = (start, end) => {
+  const { distances, previousNodes } = dijkstra(start);
+  const [ endX, endY ] = end;
+  const route = [];
+  let node = previousNodes[endX][endY];
+  route.unshift(end);
+  while (node) {
+    route.unshift(node);
+    node = previousNodes[node[0]][node[1]];
+  }
+  return route;
+}
+
+// runner([0, 0], [1, 2]);
+// runner([0, 0], [3, 3]);
+// runner([0, 0], [7, 7]);
+// runner([3, 3], [4, 3]);
