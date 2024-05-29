@@ -113,137 +113,17 @@ const runner = (start, end) => {
   const route = [];
   let node = previousNodes[endX][endY];
   route.unshift(end);
-  console.log(`Going to [${route}]`);
   while (node) {
     route.unshift(node);
     node = previousNodes[node[0]][node[1]];
   }
-  console.log(route);
+  console.log(`Moving from [${start}] to [${end}]`);
+  console.log(`You made it in ${route.length} moves!, here's your path:`);
+  route.forEach(node => console.log(node));
+  console.log(distances[endX][endY])
 };
 
-/**
- * Get all paths from one location to another.
- * currentLocation = [x, y] starting location.
- * destination = [x, y] where you want to go.
- * returns array of all possible paths.
- */
-const getPaths = (currentLocation, destination) => {
-  const list = buildAdjList(); // get adjacency list
-  const paths = []; // an array of all paths
-  // list of vertices from current location
-  const currentVertexAdjList = list[currentLocation[0]][currentLocation[1]];
-  // for each vertex in the adjacency list
-  for (let i = 0; i < currentVertexAdjList.length; i++) {
-    // create a new array representing a path continuing from the starting
-    // location to the first vertex
-    const path = [currentLocation, currentVertexAdjList[i]];
-    let vertexNum = 0; // for keeping track of the current vertex in the adjacency list
-    let lastVisitedVertex = path[path.length - 1]; // the vertex at the end of the path
-    let nextNode = list[lastVisitedVertex[0]][lastVisitedVertex[1]][vertexNum]; // the next candidate vertex to put on the path
-    for (
-      vertexNum;
-      vertexNum < list[lastVisitedVertex[0]][lastVisitedVertex[1]].length;
-      vertexNum++
-    ) {
-      nextNode = list[lastVisitedVertex[0]][lastVisitedVertex[1]][vertexNum]; // the next candidate vertex to put on the path
-      if (path.contains(nextNode)) continue; // if we've already visited that vertex, skip it
-      if (nextNode === destination) {
-        path.push(nextNode);
-      }
-    }
-  }
-};
-
-const getPathsRec = (curr, dest) => {
-  const list = buildAdjList();
-  const paths = [];
-  for (let i = 0; i < list[curr[0]][curr[1]].length; i++) {
-    const path = [curr];
-    getPathRec(list, path, list[curr[0]][curr[i]][i], dest);
-    paths.push(path);
-  }
-  console.log("\n\npaths:");
-  paths.forEach((path) => {
-    console.log(path);
-  });
-};
-
-const containsDuplicates = (array) => {
-  const seen = {};
-  return array.some((elem) => {
-    if (seen.hasOwnProperty(elem)) return true;
-    seen[elem] = false;
-  });
-};
-
-const containsTarget = (array, target) => {
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].toString() === target.toString()) {
-      console.log(array[i].toString());
-      console.log(target.toString());
-      return true;
-    }
-  }
-  return false;
-};
-
-// todo for next:
-// for each vertex in the list of the current vertex's adjacency list,
-// before making the recursive call to the iterator's vertex, make a
-// new path, containing everything up to that point, and after the recursive
-// call, if that path ends in the destination, add that path to the list of
-// paths, so that we make get as many paths as possible
-
-const getPathRec = (list, path, vertex, destination) => {
-  console.log("\n\n");
-  console.log("vertex, path, destination:");
-  console.log(vertex, path, destination);
-  console.log("path includes destination? ", containsTarget(path, destination));
-  let duplicate = containsDuplicates(path);
-  console.log("contains duplicate entries? ", duplicate);
-  if (duplicate) return null;
-  if (containsTarget(path, vertex) || containsTarget(path, destination))
-    return null;
-  path.push(vertex);
-  console.log(list[vertex[0]][vertex[1]]);
-  for (let i = 0; i < list[vertex[0]][vertex[1]].length; i++) {
-    getPathRec(list, path, list[vertex[0]][vertex[1]][i], destination);
-  }
-};
-
-const test = () => {
-  const array = [
-    [3, 7],
-    [1, 6],
-    [0, 4],
-    [2, 5],
-    [0, 6],
-    [2, 7],
-    [0, 6],
-    [2, 5],
-    [1, 7],
-    [0, 5],
-    [1, 7],
-    [3, 6],
-    [1, 7],
-    [2, 5],
-    [3, 7],
-  ];
-  console.log(containsTarget(array, [1, 6]));
-  // const seen = {};
-  // return array.some(elem => {
-  //   if (seen.hasOwnProperty(elem)) {
-  //     return true
-  //   }
-  //   else return (seen[elem] = false);
-  // })
-};
-
-// getPathsRec([0, 0], [1, 2]);
-// test();
-//
-// console.log(dijkstra([0, 0], [1, 2]));
-
-runner([0, 0], [1, 2]);
-runner([0, 0], [3, 3]);
-runner([0, 0], [7, 7]);
+// runner([0, 0], [1, 2]);
+// runner([0, 0], [3, 3]);
+// runner([0, 0], [7, 7]);
+runner([3, 3], [4, 3]);
