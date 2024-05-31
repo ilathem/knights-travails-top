@@ -13,6 +13,18 @@
 		padding: 1em;
 		border: 2px solid black;
 	}
+	.square:hover {
+		background-color: lightgray;
+	}
+	.center {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border: 2px solid black;
+		padding-bottom: 1em;
+	}
 </style>
 <body>
 	<div class="center">
@@ -33,28 +45,30 @@
 				let cell = document.createElement('td');
 				grid[i][j] = cell;
 				row.appendChild(cell);
-				cell.addEventListener('click', (e) => {
-					// console.log(`clicked [${j - 1}, ${7 - i}]`);
-					if (selecting)
-						selectSquare(i, j, grid);
-					else clearSquares(grid);
-				});
 				if (i === 8 && j !== 0) {
 					cell.innerText = j - 1;
 					cell.style.border = 'none';
 					cell.style.padding = '0';
 					cell.style.textAlign = 'center';
 				}
-				if (i === 8 && j === 0) {
+				else if (i === 8 && j === 0) {
 					cell.style.border = 'none';
 					cell.style.padding = '0';
 				}
-				if (j === 0 && i !== 8) {
+				else if (j === 0 && i !== 8) {
 					cell.innerText = 7 - i;
 					cell.style.border = 'none';
 					cell.style.padding = '0';
 					cell.style.width = '28px';
 					cell.style.textAlign = 'center';
+				} else {
+					cell.addEventListener('click', (e) => {
+						// console.log(`clicked [${j - 1}, ${7 - i}]`);
+						if (selecting)
+							selectSquare(i, j, grid);
+						else clearSquares(grid);
+					});
+					cell.classList.add('square');
 				}
 			}
 			table.appendChild(row);
@@ -74,19 +88,20 @@
 			printPath(grid);
 		}
 		starting = !starting;
-		document.querySelector('.text').innerText = `Select ${starting ? 'starting' : 'ending'} square`
+		if (selecting) document.querySelector('.text').innerText = `Select ${starting ? 'starting' : 'ending'} square!`
+		else document.querySelector('.text').innerText = `Click any square to reset`
 		// console.log(startingSquare, endingSquare);
 	}
 
 	function printPath(grid) {
 		const path = getPath(startingSquare, endingSquare);
-		console.log(path);
+		// console.log(path);
 		// Todo: visualize path in UI (colored squares with step number
 		// on each square)
 		for (let i = 0; i < path.length; i++) {
 			const x = path[i][0] + 1;
 			const y = 7 - path[i][1];
-			console.log([x, y])
+			// console.log([x, y])
 			grid[y][x].innerText = i;
 			grid[y][x].style.padding = '0';
 			grid[y][x].style.textAlign = 'center';
@@ -119,6 +134,7 @@
 				}
 			}
 		}
+		document.querySelector('.text').innerText = `Select starting square!`
 		startingSquare = [];
 		endingSquare = [];
 		selecting = true;
