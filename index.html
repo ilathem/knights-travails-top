@@ -83,6 +83,14 @@
 		console.log(path);
 		// Todo: visualize path in UI (colored squares with step number
 		// on each square)
+		for (let i = 0; i < path.length; i++) {
+			const x = path[i][0] + 1;
+			const y = 7 - path[i][1];
+			console.log([x, y])
+			grid[y][x].innerText = i;
+			grid[y][x].style.padding = '0';
+			grid[y][x].style.textAlign = 'center';
+		}
 	}
 
 	function clearSquares(grid) {
